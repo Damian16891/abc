@@ -3,24 +3,18 @@ name: Compile Lazarus Project
 on:
   push:
     branches:
-      - main  # Możesz zmienić na nazwę swojej gałęzi
-  pull_request:
-    branches:
-      - main  # Trigger, jeśli robisz pull request na gałąź 'main'
+      - main
 
 jobs:
   build:
-    runs-on: windows-latest  # Używamy Windowsa, ponieważ instalujemy Free Pascal
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2  # Pobieramy kod z repozytorium
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-    - name: Install Free Pascal
-      run: |
-        Invoke-WebRequest -Uri "https://freepascal.org/download.var" -OutFile "fpc_installer.exe"
-        Start-Process -FilePath "fpc_installer.exe" -ArgumentList "/VERYSILENT" -Wait  # Instalujemy Free Pascal
+    - name: Set up Free Pascal (using a prebuilt image)
+      run: sudo apt-get install fpc
 
     - name: Compile Lazarus Project
-      run: |
-        fpc project1.lpr  # Kompilowanie projektu Lazarus (tutaj zakłada się, że Twój plik to 'project1.lpr')
+      run: fpc project1.lpr
