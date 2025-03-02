@@ -1,0 +1,37 @@
+name: Compile Lazarus Project
+
+on:
+  push:
+    branches:
+      - main  # Uruchomi workflow na push do głównej gałęzi
+
+jobs:
+  build:
+    runs-on: windows-latest  # Kompilacja na Windowsie (można zmienić na Linux, jeśli używasz innego środowiska)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Free Pascal
+        run: |
+          choco install fpc  # Instalowanie Free Pascal przez Chocolatey
+
+      - name: Compile Lazarus project
+        run: |
+          fpc Project1.pas  # Kompilacja projektu (dostosuj nazwę pliku, jeśli to konieczne)
+
+      - name: Verify exe creation
+        run: |
+          if exist "Project1.exe" (
+            echo "Build successful"
+          ) else (
+            echo "Build failed"
+            exit 1
+          )
+
+      - name: Upload exe as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: hello-world-exe
+          path: Project1.exe  # Zmienna na ścieżkę do wygenerowanego pliku exe
