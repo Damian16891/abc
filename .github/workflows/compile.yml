@@ -3,40 +3,25 @@ name: Compile Lazarus Project
 on:
   push:
     branches:
-      - main
+      - main  # Może to być nazwa twojej gałęzi, np. 'main' lub 'master'
+  pull_request:
+    branches:
+      - main  # Zdarzenie triggerujące, np. otwieranie PR
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-latest  # Określenie systemu operacyjnego
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2  # Pobieranie kodu z repozytorium
 
-      - name: Download Free Pascal
-        run: |
-          Invoke-WebRequest -Uri "https://freepascal.org/download.var" -OutFile "fpc.zip"
-          Expand-Archive -Path "fpc.zip" -DestinationPath "C:\fpc"
+    - name: Install Free Pascal
+      run: |
+        Invoke-WebRequest -Uri "https://freepascal.org/download.var" -OutFile "fpc_installer.exe"
+        Start-Process -FilePath "fpc_installer.exe" -ArgumentList "/VERYSILENT" -Wait
 
-      - name: Add Free Pascal to PATH
-        run: |
-          $env:PATH = "C:\fpc\bin\i386-win32;$env:PATH"
-        
-      - name: Compile Lazarus project
-        run: |
-          fpc Project1.pas
-
-      - name: Verify exe creation
-        run: |
-          if exist "Project1.exe" (
-            echo "Build successful"
-          ) else (
-            echo "Build failed"
-            exit 1
-          )
-
-      - name: Upload exe as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: hello-world-exe
-          path: Project1.exe
+    - name: Compile Lazarus Project
+      run: |
+        cd path_to_your_project  # Upewnij się, że ścieżka jest poprawna
+        fpc your_project.lpr  # Kompilowanie pliku Lazarus
