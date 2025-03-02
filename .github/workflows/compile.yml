@@ -31,7 +31,7 @@ jobs:
           )
 
       - name: Upload exe as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3  # Zmieniono na v3
         with:
           name: hello-world-exe
           path: Project1.exe  # Zmienna na ścieżkę do wygenerowanego pliku exe
