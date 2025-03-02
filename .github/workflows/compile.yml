@@ -13,11 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Free Pascal
+      - name: Download Free Pascal
         run: |
-          Invoke-WebRequest -Uri "https://freepascal.org/download.var" -OutFile "fpc_installer.exe"
-          Start-Process -FilePath "fpc_installer.exe" -ArgumentList "/VERYSILENT" -Wait
-          
+          Invoke-WebRequest -Uri "https://freepascal.org/download.var" -OutFile "fpc.zip"
+          Expand-Archive -Path "fpc.zip" -DestinationPath "C:\fpc"
+
+      - name: Add Free Pascal to PATH
+        run: |
+          $env:PATH = "C:\fpc\bin\i386-win32;$env:PATH"
+        
       - name: Compile Lazarus project
         run: |
           fpc Project1.pas
